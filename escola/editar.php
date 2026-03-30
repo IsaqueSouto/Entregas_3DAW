@@ -2,28 +2,25 @@
 
 function salvarAluno($matricula, $nome, $email)
 {
-
     if ($matricula == "" || $nome == "" || $email == "") {
         return "Preencha todos os campos!";
     }
 
-    $arqAluno = fopen("alunos.txt", "a");
-    fwrite($arqAluno, $matricula . ";" . $nome . ";" . $email . "\n");
-    fclose($arqAluno);
+    if (!file_exists("alunos.txt")) {
+        $arq = fopen("alunos.txt", "w");
+        fwrite($arq, "matricula;nome;email\n");
+        fclose($arq);
+    }
 
-    return "Deu tudo certo!";
-}
+    $arq = fopen("alunos.txt", "a");
+    fwrite($arq, "$matricula;$nome;$email\n");
+    fclose($arq);
 
-function limparTabela()
-{
-    $arqAluno = fopen("alunos.txt", "w");
-    fwrite($arqAluno, "matricula;nome;email\n");
-    fclose($arqAluno);
+    return "Aluno cadastrado!";
 }
 
 function editarAluno($matricula, $nome, $email)
 {
-
     if ($matricula == "" || $nome == "" || $email == "") {
         return "Preencha todos os campos!";
     }
@@ -33,27 +30,37 @@ function editarAluno($matricula, $nome, $email)
     }
 
     $linhas = file("alunos.txt");
-    $arqAluno = fopen("alunos.txt", "w");
+    $arq = fopen("alunos.txt", "w");
 
     $achou = false;
 
     foreach ($linhas as $linha) {
-        $dados = explode(";", $linha);
 
-        if ($dados[0] == $matricula) {
-            $linha = $matricula . ";" . $nome . ";" . $email . "\n";
-            $achou = true;
+        $dados = explode(";", trim($linha));
+
+        if ($dados[0] == "matricula") {
+            fwrite($arq, $linha);
+            continue;
         }
 
-        fwrite($arqAluno, $linha);
+        if ($dados[0] == $matricula) {
+            fwrite($arq, "$matricula;$nome;$email\n");
+            $achou = true;
+        } else {
+            fwrite($arq, $linha);
+        }
     }
 
-    fclose($arqAluno);
+    fclose($arq);
 
-    if ($achou) {
-        return "Aluno atualizado!";
-    }
-
-    return "Matricula nao encontrada!";
+    return $achou ? "Aluno atualizado!" : "Matricula nao encontrada!";
 }
-?>
+
+function limparTabela()
+{
+    $arq = fopen("alunos.txt", "w");
+    fwrite($arq, "matricula;nome;email\n");
+    fclose($arq);
+
+    return "Tabela limpa!";
+}
