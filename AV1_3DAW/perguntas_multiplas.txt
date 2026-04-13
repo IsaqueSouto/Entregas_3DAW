@@ -1,0 +1,5 @@
+O que fazer em atraso de projeto?;Ignorar;Brigar com equipe;Reunir equipe;Cancelar projeto;C
+Melhor forma de contratar?;Indicação sem análise;Entrevista e currículo;Aleatório;Sem processo;B
+Falta de orçamento deve ser;Ignorada;Reavaliada;Aumentada;Ocultada;B
+Conflito na equipe deve ser;Ignorado;Estimulado;Mediado;Punido sem conversa;C
+Decisão em empréstimo deve considerar;Impulso;Risco e análise;Sorte;Pressa;B
