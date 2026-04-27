@@ -1,68 +1,90 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Perguntas - Múltipla Escolha</title>
-</head>
-<body>
-
-<h3>Perguntas de Múltipla Escolha</h3>
-
 <?php
-$arquivo = fopen("perguntas_multiplas.txt", "r") or die("Erro ao abrir arquivo");
-
+$linhas = file("perguntas_multiplas.txt", FILE_IGNORE_NEW_LINES);
 $perguntas = [];
 
-while (!feof($arquivo)) {
+foreach ($linhas as $l) {
+    $dados = explode(";", $l);
 
-    $linha = fgets($arquivo);
+    if (count($dados) < 6)
+        continue;
 
-    if (trim($linha) != "") {
-
-        $dados = explode(";", $linha);
-        $perguntas[] = $dados;
-    }
+    $perguntas[] = $dados;
 }
 
-fclose($arquivo);
-?>
-
-<form method="POST">
-
-<?php
-for ($i = 0; $i < count($perguntas); $i++) {
-
-    echo "<p><strong>" . $perguntas[$i][0] . "</strong></p>";
-
-    echo "<label><input type='radio' name='respostas[$i]' value='A' required> A) " . $perguntas[$i][1] . "</label><br>";
-    echo "<label><input type='radio' name='respostas[$i]' value='B'> B) " . $perguntas[$i][2] . "</label><br>";
-    echo "<label><input type='radio' name='respostas[$i]' value='C'> C) " . $perguntas[$i][3] . "</label><br>";
-    echo "<label><input type='radio' name='respostas[$i]' value='D'> D) " . $perguntas[$i][4] . "</label><br><br>";
-}
-?>
-
-<button type="submit">Salvar</button>
-
-</form>
-
-<?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (!isset($_POST["respostas"])) {
+        echo "Nenhuma resposta enviada!";
+        exit;
+    }
 
     $respostas = $_POST["respostas"];
 
-    $arquivo = fopen("respostas_multiplas.txt", "a") or die("Erro ao abrir arquivo");
+    $arquivo = fopen("respostas_multiplas.txt", "w");
 
-    for ($i = 0; $i < count($perguntas); $i++) {
+    $acertos = 0;
+    $total = count($perguntas);
 
-        $linha = $perguntas[$i][0] . ";" . $respostas[$i] . "\n";
-        fwrite($arquivo, $linha);
+    foreach ($respostas as $i => $r) {
+
+        fwrite($arquivo, $i . ";" . $r . "\n");
+
+        if (isset($perguntas[$i]) && $r == trim($perguntas[$i][5])) {
+            $acertos++;
+        }
     }
 
     fclose($arquivo);
 
-    echo "<p>Respostas salvas com sucesso</p>";
+    echo "<h3>Você acertou $acertos de $total perguntas!</h3><hr>";
 }
 ?>
 
-</body>
-</html>
+<form method="POST">
+
+    <?php foreach ($perguntas as $i => $p) { ?>
+
+        <?php if (trim($p[0]) == "")
+            continue; ?>
+
+        <div>
+
+            <p><b>
+                    <?php echo $p[0]; ?>
+                </b></p>
+
+            <label style="display:block;">
+                A
+                <input type='radio' name='respostas[<?php echo $i; ?>]' value='A' required>
+                <?php echo $p[1]; ?>
+            </label>
+
+            <label style="display:block;">
+                B
+                <input type='radio' name='respostas[<?php echo $i; ?>]' value='B' required>
+                <?php echo $p[2]; ?>
+            </label>
+
+            <label style="display:block;">
+                C
+                <input type='radio' name='respostas[<?php echo $i; ?>]' value='C' required>
+                <?php echo $p[3]; ?>
+            </label>
+
+            <label style="display:block;">
+                D
+                <input type='radio' name='respostas[<?php echo $i; ?>]' value='D' required>
+                <?php echo $p[4]; ?>
+            </label>
+
+        </div>
+
+    <?php } ?>
+
+    <button type="submit">Salvar</button>
+
+    <a href="index.php" style="margin-left: 15px;">
+        <button type="button">Voltar</button>
+    </a>
+
+</form>
