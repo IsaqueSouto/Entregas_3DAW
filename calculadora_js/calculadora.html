@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora JS</title>
+
+<style>
+
+body{
+  background:#0f0f0f;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:Arial;
+}
+
+.calc{
+  background:#1b1b1b;
+  padding:20px;
+  border-radius:18px;
+  width:260px;
+}
+
+.display{
+  background:black;
+  color:#00ff00;
+  font-size:30px;
+  text-align:right;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+  overflow:hidden;
+}
+
+.btns{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+button{
+  height:60px;
+  border:none;
+  border-radius:10px;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.num{ background:#333; color:white; }
+.op{ background:orange; }
+.equal{ background:#2ecc71; }
+.clear{ background:#c0392b; color:white; }
+
+.zero{
+  grid-column:span 2;
+}
+
+button:active{
+  transform:scale(0.95);
+}
+
+.igual{
+  grid-column: span 2;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="calc">
+
+<div id="display" class="display">0</div>
+
+<div class="btns">
+
+<button class="clear" onclick="limpar()">C</button>
+<button class="op" onclick="operador('%')">%</button>
+<button class="op" onclick="operador('√')">√</button>
+<button class="op" onclick="operador('÷')">÷</button>
+
+<button class="num" onclick="numero(7)">7</button>
+<button class="num" onclick="numero(8)">8</button>
+<button class="num" onclick="numero(9)">9</button>
+<button class="op" onclick="operador('×')">×</button>
+
+<button class="num" onclick="numero(4)">4</button>
+<button class="num" onclick="numero(5)">5</button>
+<button class="num" onclick="numero(6)">6</button>
+<button class="op" onclick="operador('-')">-</button>
+
+<button class="num" onclick="numero(1)">1</button>
+<button class="num" onclick="numero(2)">2</button>
+<button class="num" onclick="numero(3)">3</button>
+<button class="op" onclick="operador('+')">+</button>
+
+<button class="num zero" onclick="numero(0)">0</button>
+<button class="equal igual" onclick="igual()">=</button>
+
+</div>
+
+</div>
+
+<script>
+
+let valorAtual = "";
+let valorAnterior = "";
+let operadorAtual = "";
+
+function atualizarDisplay(valor){
+  document.getElementById("display").innerText = valor;
+}
+
+function numero(n){
+  valorAtual += n;
+  atualizarDisplay(valorAtual);
+}
+
+function operador(op){
+
+  if(op === "√"){
+    let resultado = Math.sqrt(parseFloat(valorAtual));
+    atualizarDisplay(resultado);
+    valorAtual = resultado.toString();
+    return;
+  }
+
+  if(valorAtual === "") return;
+
+  valorAnterior = valorAtual;
+  operadorAtual = op;
+  valorAtual = "";
+
+  atualizarDisplay(valorAnterior + " " + operadorAtual);
+}
+
+function igual(){
+
+  let a = parseFloat(valorAnterior);
+  let b = parseFloat(valorAtual);
+  let resultado;
+
+  switch(operadorAtual){
+    case "+": resultado = a + b; break;
+    case "-": resultado = a - b; break;
+    case "×": resultado = a * b; break;
+    case "÷": resultado = b !== 0 ? a / b : "Erro"; break;
+    case "%": resultado = a * (b/100); break;
+    default: return;
+  }
+
+  atualizarDisplay(resultado);
+
+  valorAtual = resultado.toString();
+  valorAnterior = "";
+  operadorAtual = "";
+}
+
+function limpar(){
+  valorAtual = "";
+  valorAnterior = "";
+  operadorAtual = "";
+  atualizarDisplay("0");
+}
+
+</script>
+
+</body>
+</html>
