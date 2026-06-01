@@ -37,21 +37,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     fclose($arquivo);
 
     echo "<h3>Você acertou $acertos de $total perguntas!</h3><hr>";
+    exit;
 }
 ?>
 
-<form method="POST">
+<form id="formPerguntas">
 
     <?php foreach ($perguntas as $i => $p) { ?>
 
-        <?php if (trim($p[0]) == "")
-            continue; ?>
+        <?php if (trim($p[0]) == "") continue; ?>
 
         <div>
 
-            <p><b>
-                    <?php echo $p[0]; ?>
-                </b></p>
+            <p><b><?php echo $p[0]; ?></b></p>
 
             <label style="display:block;">
                 A
@@ -81,6 +79,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <?php } ?>
 
+    <br>
+
     <button type="submit">Salvar</button>
 
     <a href="index.php" style="margin-left: 15px;">
@@ -88,3 +88,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </a>
 
 </form>
+
+<div id="resultado"></div>
+
+<script>
+document.getElementById("formPerguntas").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    fetch("perguntas_multiplas.php", {
+        method: "POST",
+        body: new FormData(this)
+    })
+    .then(r => r.text())
+    .then(t => {
+        document.getElementById("resultado").innerHTML = t;
+    });
+
+});
+</script>
