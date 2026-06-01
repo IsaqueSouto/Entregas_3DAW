@@ -25,10 +25,12 @@ if ($_POST) {
     } else {
         echo "Arquivo não encontrado!";
     }
+
+    exit;
 }
 ?>
 
-<form method="post">
+<form id="formExcluir">
     ID: <input name="id" required><br><br>
 
     Tipo:
@@ -42,4 +44,23 @@ if ($_POST) {
     <button>Excluir</button>
 </form>
 
+<div id="mensagem"></div>
+
 <a href="index.php">Voltar</a>
+
+<script>
+document.getElementById("formExcluir").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    fetch("excluir_pergunta.php", {
+        method: "POST",
+        body: new FormData(this)
+    })
+    .then(r => r.text())
+    .then(t => {
+        document.getElementById("mensagem").innerHTML = t;
+    });
+
+});
+</script>
