@@ -12,18 +12,27 @@ if ($_POST) {
     $linhas = file('perguntas_multiplas.txt', FILE_IGNORE_NEW_LINES);
 
     if (isset($linhas[$id])) {
+
         $linhas[$id] = $pergunta . ";" . $a . ";" . $b . ";" . $c . ";" . $d . ";" . $correta;
 
-        file_put_contents('perguntas_multiplas.txt', implode("\n", $linhas));
+        file_put_contents(
+            'perguntas_multiplas.txt',
+            implode("\n", $linhas)
+        );
 
         echo "Pergunta, respostas e alternativa correta alteradas!";
+
     } else {
+
         echo "ID inválido!";
     }
+
+    exit;
 }
 ?>
 
-<form method="post">
+<form id="formAlterar">
+
     ID: <input name="id" required><br><br>
 
     Pergunta: <input name="pergunta" required><br><br>
@@ -43,7 +52,34 @@ if ($_POST) {
 
     <br><br>
 
-    <button>Alterar</button>
+    <button type="submit">Alterar</button>
+
 </form>
 
+<br>
+
+<div id="mensagem"></div>
+
+<br>
+
 <a href="index.php">Voltar</a>
+
+<script>
+
+document.getElementById("formAlterar")
+.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    fetch("alterar_pergunta_multipla.php", {
+        method: "POST",
+        body: new FormData(this)
+    })
+    .then(resposta => resposta.text())
+    .then(texto => {
+        document.getElementById("mensagem").innerHTML = texto;
+    });
+
+});
+
+</script>
