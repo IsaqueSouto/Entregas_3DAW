@@ -1,31 +1,39 @@
 <h3>Múltipla Escolha</h3>
+
 <?php
-if (file_exists("perguntas_multiplas.txt")) {
-    $linhas = file("perguntas_multiplas.txt", FILE_IGNORE_NEW_LINES);
+if (file_exists("perguntas_multiplas.json")) {
 
-    foreach ($linhas as $i => $l) {
-        $d = explode(";", $l);
+    $linhas = json_decode(
+        file_get_contents("perguntas_multiplas.json"),
+        true
+    );
 
-        if (count($d) < 6)
-            continue;
+    foreach ($linhas as $p) {
 
-        echo "<b>" . $d[0] . "</b><br>";
-        echo "A) " . $d[1] . "<br>";
-        echo "B) " . $d[2] . "<br>";
-        echo "C) " . $d[3] . "<br>";
-        echo "D) " . $d[4] . "<br>";
-        echo "Correta: " . $d[5] . "<br><br>";
+        echo "<b>" . $p["pergunta"] . "</b><br>";
+        echo "A) " . $p["a"] . "<br>";
+        echo "B) " . $p["b"] . "<br>";
+        echo "C) " . $p["c"] . "<br>";
+        echo "D) " . $p["d"] . "<br>";
+        echo "Correta: " . $p["correta"] . "<br><br>";
     }
 }
 ?>
 
 <h3>Perguntas de Texto</h3>
+
 <?php
-if (file_exists("perguntas_texto.txt")) {
-    $linhas = file("perguntas_texto.txt");
-    foreach ($linhas as $i => $l) {
-        echo "<b>" . $l . "</b><br><br>";
+if (file_exists("perguntas_texto.json")) {
+
+    $linhas = json_decode(
+        file_get_contents("perguntas_texto.json"),
+        true
+    );
+
+    foreach ($linhas as $p) {
+        echo "<b>" . $p . "</b><br><br>";
     }
 }
 ?>
+
 <a href="index.php">Voltar</a>
