@@ -1,5 +1,6 @@
 <?php
 if ($_POST) {
+
     $id = $_POST['id'];
 
     $pergunta = $_POST['pergunta'];
@@ -9,15 +10,25 @@ if ($_POST) {
     $d = $_POST['d'];
     $correta = $_POST['correta'];
 
-    $linhas = file('perguntas_multiplas.txt', FILE_IGNORE_NEW_LINES);
+    $linhas = json_decode(
+        file_get_contents('perguntas_multiplas.json'),
+        true
+    );
 
     if (isset($linhas[$id])) {
 
-        $linhas[$id] = $pergunta . ";" . $a . ";" . $b . ";" . $c . ";" . $d . ";" . $correta;
+        $linhas[$id] = [
+            "pergunta" => $pergunta,
+            "a" => $a,
+            "b" => $b,
+            "c" => $c,
+            "d" => $d,
+            "correta" => $correta
+        ];
 
         file_put_contents(
-            'perguntas_multiplas.txt',
-            implode("\n", $linhas)
+            'perguntas_multiplas.json',
+            json_encode($linhas, JSON_PRETTY_PRINT)
         );
 
         echo "Pergunta, respostas e alternativa correta alteradas!";
@@ -66,20 +77,20 @@ if ($_POST) {
 
 <script>
 
-document.getElementById("formAlterar")
-.addEventListener("submit", function(e){
+    document.getElementById("formAlterar")
+        .addEventListener("submit", function (e) {
 
-    e.preventDefault();
+            e.preventDefault();
 
-    fetch("alterar_pergunta_multipla.php", {
-        method: "POST",
-        body: new FormData(this)
-    })
-    .then(resposta => resposta.text())
-    .then(texto => {
-        document.getElementById("mensagem").innerHTML = texto;
-    });
+            fetch("alterar_pergunta_multipla.php", {
+                method: "POST",
+                body: new FormData(this)
+            })
+                .then(resposta => resposta.text())
+                .then(texto => {
+                    document.getElementById("mensagem").innerHTML = texto;
+                });
 
-});
+        });
 
 </script>
