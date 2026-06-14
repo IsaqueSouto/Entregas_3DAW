@@ -34,39 +34,40 @@ $id = (int) $id;
 
 if ($tipo == "m") {
 
-    if (!file_exists("perguntas_multiplas.txt")) {
+    if (!file_exists("perguntas_multiplas.json")) {
         echo "Arquivo não encontrado!";
         exit;
     }
 
-    $linhas = file("perguntas_multiplas.txt", FILE_IGNORE_NEW_LINES);
+    $linhas = json_decode(
+        file_get_contents("perguntas_multiplas.json"),
+        true
+    );
 
     if (!isset($linhas[$id])) {
         echo "Pergunta não encontrada!";
         exit;
     }
 
-    $d = explode(";", $linhas[$id]);
+    $p = $linhas[$id];
 
-    if (count($d) < 6) {
-        echo "Pergunta inválida!";
-        exit;
-    }
-
-    echo "<b>" . $d[0] . "</b><br>";
-    echo "A) " . $d[1] . "<br>";
-    echo "B) " . $d[2] . "<br>";
-    echo "C) " . $d[3] . "<br>";
-    echo "D) " . $d[4] . "<br>";
+    echo "<b>" . $p["pergunta"] . "</b><br>";
+    echo "A) " . $p["a"] . "<br>";
+    echo "B) " . $p["b"] . "<br>";
+    echo "C) " . $p["c"] . "<br>";
+    echo "D) " . $p["d"] . "<br>";
 
 } else {
 
-    if (!file_exists("perguntas_texto.txt")) {
+    if (!file_exists("perguntas_texto.json")) {
         echo "Arquivo não encontrado!";
         exit;
     }
 
-    $linhas = file("perguntas_texto.txt", FILE_IGNORE_NEW_LINES);
+    $linhas = json_decode(
+        file_get_contents("perguntas_texto.json"),
+        true
+    );
 
     if (!isset($linhas[$id])) {
         echo "Pergunta não encontrada!";
