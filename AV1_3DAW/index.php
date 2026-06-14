@@ -1,3 +1,54 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+
+    $usuarios = [];
+
+    if (file_exists("users.json")) {
+        $usuarios = json_decode(
+            file_get_contents("users.json"),
+            true
+        );
+    }
+    if (!$usuarios) {
+        $usuarios = [];
+    }
+    $existe = false;
+
+    foreach ($usuarios as $u) {
+
+        if ($u["email"] == $email) {
+            $existe = true;
+            break;
+        }
+
+    }
+
+    if ($existe) {
+
+        echo "Email já cadastrado!";
+
+    } else {
+
+        $usuarios[] = [
+            "name" => $name,
+            "email" => $email
+        ];
+
+        file_put_contents(
+            "users.json",
+            json_encode($usuarios, JSON_PRETTY_PRINT)
+        );
+
+        echo "Usuário cadastrado com sucesso!";
+    }
+
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -18,41 +69,6 @@
 
     <div id="mensagem"></div>
 
-    <?php
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $name = trim($_POST['name']);
-        $email = trim($_POST['email']);
-        $existe = false;
-
-        if (file_exists("users.txt")) {
-            $usuarios = file("users.txt");
-
-            foreach ($usuarios as $u) {
-                $dados = explode(";", $u);
-
-                if (trim($dados[1]) == $email) {
-                    $existe = true;
-                    break;
-                }
-            }
-        }
-
-        if ($existe) {
-            echo "Email já cadastrado!";
-        } else {
-            $linha = $name . ";" . $email . "\n";
-
-            $userArq = fopen('users.txt', 'a');
-            fwrite($userArq, $linha);
-            fclose($userArq);
-
-            echo "Usuário cadastrado com sucesso!";
-        }
-
-        exit;
-    }
-    ?>
-
     <hr>
 
     <h2>Menu</h2>
@@ -68,20 +84,20 @@
     <a href="excluir_pergunta.php">Excluir Pergunta</a>
 
     <script>
-    document.getElementById("formUsuario").addEventListener("submit", function(e){
+        document.getElementById("formUsuario").addEventListener("submit", function (e) {
 
-        e.preventDefault();
+            e.preventDefault();
 
-        fetch("index.php", {
-            method: "POST",
-            body: new FormData(this)
-        })
-        .then(r => r.text())
-        .then(t => {
-            document.getElementById("mensagem").innerHTML = t;
+            fetch("index.php", {
+                method: "POST",
+                body: new FormData(this)
+            })
+                .then(r => r.text())
+                .then(t => {
+                    document.getElementById("mensagem").innerHTML = t;
+                });
+
         });
-
-    });
     </script>
 
 </body>
