@@ -1,16 +1,22 @@
 <?php
 if ($_POST) {
+
     $id = $_POST['id'];
     $tipo = $_POST['tipo'];
 
     if ($tipo == "multipla") {
-        $arquivo = 'perguntas_multiplas.txt';
+        $arquivo = 'perguntas_multiplas.json';
     } else {
-        $arquivo = 'perguntas_texto.txt';
+        $arquivo = 'perguntas_texto.json';
     }
 
     if (file_exists($arquivo)) {
-        $linhas = file($arquivo);
+
+        $linhas = json_decode(
+            file_get_contents($arquivo),
+            true
+        );
+
         $novasLinhas = [];
 
         foreach ($linhas as $index => $linha) {
@@ -19,10 +25,15 @@ if ($_POST) {
             }
         }
 
-        file_put_contents($arquivo, implode('', $novasLinhas));
+        file_put_contents(
+            $arquivo,
+            json_encode($novasLinhas, JSON_PRETTY_PRINT)
+        );
 
         echo "Pergunta excluída com sucesso!";
+
     } else {
+
         echo "Arquivo não encontrado!";
     }
 
@@ -49,18 +60,18 @@ if ($_POST) {
 <a href="index.php">Voltar</a>
 
 <script>
-document.getElementById("formExcluir").addEventListener("submit", function(e){
+    document.getElementById("formExcluir").addEventListener("submit", function (e) {
 
-    e.preventDefault();
+        e.preventDefault();
 
-    fetch("excluir_pergunta.php", {
-        method: "POST",
-        body: new FormData(this)
-    })
-    .then(r => r.text())
-    .then(t => {
-        document.getElementById("mensagem").innerHTML = t;
+        fetch("excluir_pergunta.php", {
+            method: "POST",
+            body: new FormData(this)
+        })
+            .then(r => r.text())
+            .then(t => {
+                document.getElementById("mensagem").innerHTML = t;
+            });
+
     });
-
-});
 </script>
