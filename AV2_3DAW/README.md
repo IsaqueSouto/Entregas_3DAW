@@ -143,25 +143,3 @@ http://localhost/AV2_3DAW/
 | `api/pix-qr.php` | POST | Gera dados para pagamento Pix |
 | `api/boleto.php` | POST | Gera dados para pagamento Boleto |
 | `api/ultimo-agendamento.php` | GET | Retorna o último agendamento do usuário |
-
----
-
-## Segurança
-
-- Senhas armazenadas com `password_hash()` (bcrypt).
-- Verificação com `password_verify()` no login.
-- Todas as APIs que exigem autenticação utilizam `exige_login_api()`.
-- Comunicação via sessões PHP (`session_start()`).
-- Requisições fetch incluem `credentials: 'same-origin'` para manter cookies de sessão.
-
----
-
-## Autor
-
-Projeto acadêmico desenvolvido para a disciplina **3DAW**.
-
----
-
-## Licença
-
-Uso educacional. Não destinado a produção comercial sem adaptações.
