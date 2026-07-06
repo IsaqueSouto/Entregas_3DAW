@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Horários</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="faixa-valor">Valor do serviço: R$29,99</div>
+        <div class="horarios" id="horarios"></div>
+    </main>
+    <script src="js/comum.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        (async () => {
+            if (!(await exigirLogin())) return;
+            montarTopo({ titulo: 'Horários', mostrarSair: true });
+
+            const params = new URLSearchParams(location.search);
+            const dados = {
+                profissional: params.get('prof') || '',
+                dia: params.get('dia') || '',
+                servico: params.get('servico') || '',
+                mensal: params.has('mensal') ? '1' : ''
+            };
+
+            const { json } = await chamarApi('api/horarios.php');
+            if (!json.ok) return;
+
+            const cont = document.getElementById('horarios');
+            cont.innerHTML = json.horarios
+                .map(h => `<button type="button" class="horario" data-h="${h}">${h}</button>`)
+                .join('');
+
+            cont.querySelectorAll('.horario').forEach(b => {
+                b.addEventListener('click', async () => {
+                    const { json } = await chamarApi('api/agendar.php', { ...dados, horario: b.dataset.h });
+                    if (json.ok) location.href = 'pagamento.html';
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

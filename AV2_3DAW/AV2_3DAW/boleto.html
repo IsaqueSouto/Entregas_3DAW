@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Boleto</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="caixa-boleto">
+            <h3>Boleto Gerado</h3>
+            <p><strong>Banco:</strong> Seu Banco</p>
+            <p><strong>Valor:</strong> <span id="valor"></span></p>
+            <p><strong>Vencimento:</strong> <span id="vencimento"></span></p>
+            <p><strong>Código:</strong> <span class="codigo-boleto" id="codigo"></span></p>
+            <div class="codigo-barras">|| ||| || |||| || ||| || ||||</div>
+            <div class="botoes">
+                <a href="pagamento.html" class="btn">Retornar</a>
+                <button type="button" class="btn" id="concluir">Concluir</button>
+            </div>
+        </div>
+    </main>
+    <script src="js/comum.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        (async () => {
+            if (!(await exigirLogin())) return;
+            montarTopo({ titulo: 'Boleto', mostrarSair: true });
+            const { json } = await chamarApi('api/boleto.php');
+            if (json.ok) {
+                document.getElementById('valor').textContent = json.valor;
+                document.getElementById('vencimento').textContent = json.vencimento;
+                document.getElementById('codigo').textContent = json.codigo;
+            }
+        })();
+
+        document.getElementById('concluir').addEventListener('click', async () => {
+            const { json } = await chamarApi('api/pagar.php', { forma: 'boleto' });
+            if (json.ok) location.href = 'concluido.html';
+        });
+    </script>
+</body>
+</html>

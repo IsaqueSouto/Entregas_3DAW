@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Profissionais</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="profissionais" id="lista"></div>
+    </main>
+    <script src="js/comum.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        (async () => {
+            if (!(await exigirLogin())) return;
+            montarTopo({ titulo: 'Profissionais', mostrarSair: true });
+            const { json } = await chamarApi('api/profissionais.php');
+            if (!json.ok) return;
+            document.getElementById('lista').innerHTML = json.profissionais.map(p => `
+                <a href="profissional.html?id=${encodeURIComponent(p.id)}">
+                    <img src="${p.foto}" alt="${p.nome}">
+                    <span>${p.nome}</span>
+                </a>`).join('');
+        })();
+    </script>
+</body>
+</html>
