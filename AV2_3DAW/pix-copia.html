@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Pix Copia e Cola</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="caixa-pix-copia">
+
+            <label for="codigo-pix">Código Pix Copia e Cola:</label>
+
+            <div class="linha-pix">
+                <input
+                    type="text"
+                    id="codigo-pix"
+                    readonly
+                >
+
+                <button type="button" class="btn" id="copiar">
+                    Copiar<br>Código
+                </button>
+            </div>
+
+            <br>
+
+            <button type="button" class="btn" id="efetuar">
+                Efetuar Pagamento
+            </button>
+
+            <p class="erro" id="erro"></p>
+
+        </div>
+    </main>
+
+    <script src="js/comum.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        function gerarCodigoPix() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let codigo = '000201';
+
+            for (let i = 0; i < 80; i++) {
+                codigo += chars[Math.floor(Math.random() * chars.length)];
+            }
+
+            return codigo;
+        }
+
+        (async () => {
+            if (!(await exigirLogin())) return;
+
+            montarTopo({
+                titulo: 'Pix Copia e Cola',
+                mostrarSair: true
+            });
+
+            document.getElementById('codigo-pix').value = gerarCodigoPix();
+        })();
+
+        document.getElementById('copiar').addEventListener('click', async () => {
+            const codigo = document.getElementById('codigo-pix').value;
+
+            try {
+                await navigator.clipboard.writeText(codigo);
+                alert('Código Pix copiado.');
+            } catch {
+                alert('Não foi possível copiar o código.');
+            }
+        });
+
+        document.getElementById('efetuar').addEventListener('click', async () => {
+            const erro = document.getElementById('erro');
+
+            erro.textContent = '';
+
+            const { json } = await chamarApi('api/pagar.php', {
+                forma: 'pix'
+            });
+
+            if (json.ok) {
+                location.href = 'concluido.html';
+            }
+        });
+    </script>
+</body>
+</html>

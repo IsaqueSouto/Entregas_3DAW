@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Pix</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="caixa-pagto">
+            <h3>Como Você Quer Pagar?</h3>
+            <a href="pix-qr.html" class="opcao-pagto">
+                <span class="icone"><img src="img/qr_code.jpg" alt="QR Code"></span>
+                <span>QR Code</span>
+            </a>
+            <a href="pix-copia.html" class="opcao-pagto">
+                <span class="icone"><img src="img/copia_cola.jpg" alt="Pix Copia e Cola"></span>
+                <span>Pix Copia e Cola</span>
+            </a>
+            <div class="botoes">
+                <a href="pagamento.html" class="btn">Retornar</a>
+            </div>
+        </div>
+    </main>
+    <script src="js/comum.js"></script>
+    <script>
+        (async () => {
+            if (!(await exigirLogin())) return;
+            montarTopo({ titulo: 'Pix', mostrarSair: true });
+        })();
+    </script>
+</body>
+</html>

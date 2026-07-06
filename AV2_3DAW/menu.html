@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Menu</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="cards" style="margin-top: 50px;">
+            <a href="profissionais.html" class="card">
+                Escolha o seu<br>Profissional!
+            </a>
+            <a href="mensal.html" class="card">
+                Veja os serviços<br>Mensais!
+            </a>
+        </div>
+    </main>
+    <script src="js/comum.js"></script>
+    <script>
+        (async () => {
+            if (!(await exigirLogin())) return;
+            montarTopo({ titulo: 'Menu', mostrarSair: true });
+        })();
+    </script>
+</body>
+</html>

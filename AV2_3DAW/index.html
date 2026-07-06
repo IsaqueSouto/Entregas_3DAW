@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Simone Belezas</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <script>
+        (async () => {
+            try {
+                const r = await fetch('api/sessao.php', { credentials: 'same-origin' });
+                const j = await r.json();
+                location.replace(j.ok ? 'menu.html' : 'login.html');
+            } catch (_) {
+                location.replace('login.html');
+            }
+        })();
+    </script>
+</body>
+</html>

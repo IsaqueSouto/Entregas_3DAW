@@ -12,18 +12,28 @@ function conexao()
     if ($pdo === null) {
         $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
         $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false,
+            PDO::ATTR_EMULATE_PREPARES => false,
         ]);
     }
     return $pdo;
 }
 
-function logado()      { return isset($_SESSION['email']); }
-function exige_login() { if (!logado()) { header('Location: login.php'); exit; } }
+function logado()
+{
+    return isset($_SESSION['email']);
+}
 
-function responder_json($dados, $status = 200)
+function exige_login()
+{
+    if (!logado()) {
+        header('Location: login.php');
+        exit;
+    }
+}
+
+function json_saida($dados, $status = 200)
 {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
@@ -33,5 +43,8 @@ function responder_json($dados, $status = 200)
 
 function exige_login_api()
 {
-    if (!logado()) responder_json(['ok' => false, 'erro' => 'nao_autenticado'], 401);
+    if (!logado()) {
+        json_saida(['ok' => false, 'erro' => 'nao_autenticado'], 401);
+    }
 }
+

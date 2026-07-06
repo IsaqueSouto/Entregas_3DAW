@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Entrar</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <form class="form-login" id="form-login">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+            <br><br>
+            <label id="pss">Senha</label>
+            <input type="password" name="senha" placeholder="Digite sua senha" required>
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Enter</button>
+                <a class="criar" href="criar-conta.html">Criar Conta</a>
+            </div>
+        </form>
+        <p class="erro" id="erro" style="display:none"></p>
+        <div class="imagens">
+            <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop" alt="Salão">
+            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=400&fit=crop" alt="Lavagem">
+        </div>
+    </main>
+    <script src="js/comum.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        (async () => {
+            const r = await fetch('api/sessao.php', { credentials: 'same-origin' });
+            const j = await r.json();
+            if (j.ok) { location.href = 'menu.html'; return; }
+            montarTopo({ titulo: 'Entrar' });
+        })();
+
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const { status, json } = await chamarApi('api/login.php', {
+                email: fd.get('email'), senha: fd.get('senha')
+            });
+            if (status === 200 && json.ok) {
+                location.href = 'menu.html';
+            } else {
+                const erro = document.getElementById('erro');
+                erro.textContent = json.erro === 'credenciais_invalidas'
+                    ? 'Email ou senha inválidos'
+                    : (json.erro || 'Erro ao entrar');
+                erro.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

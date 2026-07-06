@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Pagamento concluído</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="sucesso">
+            <h2>✓ Pagamento concluído!</h2>
+            <p id="detalhe">Seu agendamento foi confirmado.</p>
+            <a href="menu.html" class="btn">Voltar ao menu</a>
+        </div>
+    </main>
+    <script src="js/comum.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        (async () => {
+            if (!(await exigirLogin())) return;
+            montarTopo({ titulo: 'Pagamento concluído', mostrarSair: true });
+            const { json } = await chamarApi('api/ultimo-agendamento.php');
+            if (json.ok && json.agendamento) {
+                const a = json.agendamento;
+                document.getElementById('detalhe').textContent =
+                    `Agendado: ${a.servico} — ${a.dia} ${a.horario || ''}`;
+            }
+        })();
+    </script>
+</body>
+</html>

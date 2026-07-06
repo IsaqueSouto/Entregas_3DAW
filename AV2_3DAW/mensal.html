@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Serviços Mensais</title>
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="calendario" id="calendario">
+            <div class="cab">Seg.</div>
+            <div class="cab">Ter.</div>
+            <div class="cab">Qua.</div>
+            <div class="cab">Qui.</div>
+            <div class="cab">Sex.</div>
+            <div class="cab">Sab.</div>
+        </div>
+    </main>
+    <script src="js/comum.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        (async () => {
+            if (!(await exigirLogin())) return;
+            montarTopo({ titulo: 'Serviços Mensais', mostrarSair: true });
+            const { json } = await chamarApi('api/mensal.php');
+            if (!json.ok) return;
+
+            const diasSemana = [
+                'Segunda-Feira','Terça-Feira','Quarta-Feira',
+                'Quinta-Feira','Sexta-Feira','Sábado'
+            ];
+
+            const cal = document.getElementById('calendario');
+            let html = '';
+            for (let i = 0; i < json.inicio_coluna; i++) html += '<div class="dia vazio"></div>';
+            for (let d = 1; d <= json.total_dias; d++) {
+                const coluna = (json.inicio_coluna + d - 1) % 6;
+                const diaSemana = diasSemana[coluna];
+                const q = 'dia=' + encodeURIComponent('Dia ' + d)
+                        + '&dia_semana=' + encodeURIComponent(diaSemana);
+                html += `<a class="dia" href="mensal-servicos.html?${q}">${d}</a>`;
+            }
+            cal.insertAdjacentHTML('beforeend', html);
+        })();
+    </script>
+</body>
+</html>
